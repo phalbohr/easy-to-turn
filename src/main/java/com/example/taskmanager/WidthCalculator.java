@@ -1,0 +1,160 @@
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Handles width calculations for the tree.
+ * Implements the algorithm to compute total width using LCM and assign integer
+ * widths.
+ */
+public class WidthCalculator {
+
+    /**
+     * Calculates the total width by finding LCM of all path denominators.
+     * 
+     * @param root the root node of the tree
+     * @return the total width (LCM)
+     */
+    public int calculateTotalWidth(Node root) {
+        List<Integer> denominators = new ArrayList<>();
+        collectDenominators(root, 1, denominators);
+        return lcm(denominators);
+    }
+
+    /**
+     * Recursively collects denominators for each leaf path.
+     * 
+     * @param node               current node
+     * @param currentDenominator current path denominator
+     * @param denominators       list to collect denominators
+     */
+    private void collectDenominators(Node node, int currentDenominator, List<Integer> denominators) {
+        if (node.isLeaf()) {
+            denominators.add(currentDenominator);
+            return;
+        }
+
+        int childCount = node.getChildren().size();
+        int newDenominator = currentDenominator * childCount;
+
+        for (Node child : node.getChildren()) {
+            collectDenominators(child, newDenominator, denominators);
+        }
+    }
+
+    /**
+     * Computes the Least Common Multiple (LCM) of a list of integers.
+     * 
+     * @param numbers list of numbers
+     * @return LCM of all numbers
+     */
+    private int lcm(List<Integer> numbers) {
+        if (numbers.isEmpty())
+            return 1;
+        int result = numbers.get(0);
+        for (int i = 1; i < numbers.size(); i++) {
+            result = lcm(result, numbers.get(i));
+        }
+        return result;
+    }
+
+    /**
+     * Computes LCM of two numbers using GCD.
+     * 
+     * @param a first number
+     * @param b second number
+     * @return LCM of a and b
+     */
+    private int lcm(int a, int b) {
+        return a * (b / gcd(a, b));
+    }
+
+    /**
+     * Computes Greatest Common Divisor using Euclidean algorithm.
+     * 
+     * @param a first number
+     * @param b second number
+     * @return GCD of a and b
+     */
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    /**
+     * Assigns integer widths to all nodes starting from total width.
+     * 
+     * @param root       the root node
+     * @param totalWidth the total width to distribute
+     */
+    public void assignWidths(Node root, int totalWidth) {
+        assignWidthsRecursive(root, totalWidth);
+    }
+
+    /**
+     * Recursively assigns widths to nodes.
+     * 
+     * @param node  current node
+     * @param width width to assign to this node
+     */
+    private void assignWidthsRecursive(Node node, int width) {
+        node.setWidth(width);
+        if (node.isLeaf())
+            return;
+
+        int childCount = node.getChildren().size();
+        int childWidth = width / childCount;
+
+        for (Node child : node.getChildren()) {
+            assignWidthsRecursive(child, childWidth);
+        }
+    }
+
+    /**
+     * Collects widths of all leaf nodes in left-to-right order.
+     * 
+     * @param root the root node
+     * @return list of leaf widths
+     */
+    public List<Integer> getLeafWidths(Node root) {
+        List<Integer> widths = new ArrayList<>();
+        collectLeafWidths(root, widths);
+        return widths;
+    }
+
+    /**
+     * Recursively collects leaf widths.
+     * 
+     * @param node   current node
+     * @param widths list to collect widths
+     */
+    private void collectLeafWidths(Node node, List<Integer> widths) {
+        if (node.isLeaf()) {
+            widths.add(node.getWidth());
+            return;
+        }
+
+        for (Node child : node.getChildren()) {
+            collectLeafWidths(child, widths);
+        }
+    }
+
+    /**
+     * Checks if the list of widths forms a palindrome.
+     * 
+     * @param widths list of integers
+     * @return true if palindrome, false otherwise
+     */
+    public boolean isPalindrome(List<Integer> widths) {
+        int n = widths.size();
+        for (int i = 0; i < n / 2; i++) {
+            if (!widths.get(i).equals(widths.get(n - 1 - i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
