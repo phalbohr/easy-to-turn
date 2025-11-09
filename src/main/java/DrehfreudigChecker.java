@@ -16,7 +16,7 @@ public class DrehfreudigChecker {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Verwendung: java DrehfreudigChecker <dateiname1> [dateiname2] [dateiname3] ...");
-            System.out.println("Oder ohne Argumente alle Dateien in docs/aufgaben/ verarbeiten");
+            System.out.println("Oder ohne Argumente alle Dateien in aufgaben/ verarbeiten");
             processAllFiles();
             return;
         }
@@ -33,9 +33,9 @@ public class DrehfreudigChecker {
      */
     private static void processAllFiles() {
         try {
-            Path aufgabenDir = Paths.get("docs", "aufgaben");
+            Path aufgabenDir = Paths.get("aufgaben");
             if (!Files.exists(aufgabenDir)) {
-                System.out.println("Verzeichnis docs/aufgaben nicht gefunden!");
+                System.out.println("Verzeichnis aufgaben nicht gefunden!");
                 return;
             }
 
