@@ -2,15 +2,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles the display of the tree structure using ASCII art.
- * Uses the calculated widths to create proportional representation.
+ * Behandelt die Anzeige der Baumstruktur mit ASCII-Kunst.
+ * Verwendet die berechneten Breiten, um eine proportionale Darstellung zu erstellen.
  */
 public class TreeDisplay {
 
     /**
-     * Displays the tree in a visual format.
+     * Zeigt den Baum in einem visuellen Format an.
      * 
-     * @param root the root node of the tree
+     * @param root der Wurzelknoten des Baumes
      */
     public void display(Node root) {
         if (root == null)
@@ -25,16 +25,16 @@ public class TreeDisplay {
     }
 
     /**
-     * Recursively builds the display lines for the tree.
+     * Baut rekursiv die Anzeigezeilen für den Baum auf.
      * 
-     * @param node   current node
-     * @param level  current depth level
-     * @param offset horizontal offset
-     * @param lines  list to collect display lines
-     * @return the width used by this subtree
+     * @param node   aktueller Knoten
+     * @param level  aktuelle Tiefenebene
+     * @param offset horizontaler Versatz
+     * @param lines  Liste zum Sammeln der Anzeigezeilen
+     * @return die von diesem Teilbaum verwendete Breite
      */
     private int buildDisplay(Node node, int level, int offset, List<String> lines) {
-        // Ensure we have enough lines
+        // Sicherstellen, dass wir genügend Zeilen haben
         while (lines.size() <= level) {
             lines.add("");
         }
@@ -42,26 +42,26 @@ public class TreeDisplay {
         int nodeWidth = node.getWidth();
         String nodeStr;
 
-        // Special display for all nodes based on width (same logic for leaves and internal nodes)
+        // Spezielle Anzeige für alle Knoten basierend auf der Breite (gleiche Logik für Blätter und interne Knoten)
         if (nodeWidth == 1) {
             nodeStr = "1";
         } else if (nodeWidth == 2) {
             nodeStr = "[]";
         } else {
-            // For width >= 3: [....number....] with total width characters
+            // Für Breite >= 3: [....Zahl....] mit Gesamtbreite an Zeichen
             String numStr = String.valueOf(nodeWidth);
-            int dotsNeeded = nodeWidth - numStr.length() - 2; // -2 for brackets
+            int dotsNeeded = nodeWidth - numStr.length() - 2; // -2 für Klammern
             int leftDots = dotsNeeded / 2;
             int rightDots = dotsNeeded - leftDots;
             nodeStr = "[" + ".".repeat(leftDots) + numStr + ".".repeat(rightDots) + "]";
         }
 
-        // Center the node in its allocated width
+        // Zentriert den Knoten in seiner zugewiesenen Breite
         int padding = (nodeWidth - nodeStr.length()) / 2;
         String paddedNode = " ".repeat(Math.max(0, padding)) + nodeStr +
                 " ".repeat(Math.max(0, nodeWidth - nodeStr.length() - padding));
 
-        // Add to current level line
+        // Zur aktuellen Zeile hinzufügen
         if (lines.get(level).length() < offset) {
             lines.set(level, lines.get(level) + " ".repeat(offset - lines.get(level).length()));
         }
@@ -74,7 +74,7 @@ public class TreeDisplay {
             return nodeWidth;
         }
 
-        // Handle children
+        // Kinder behandeln
         int childOffset = offset;
         for (Node child : node.getChildren()) {
             int childWidth = buildDisplay(child, level + 1, childOffset, lines);

@@ -35,8 +35,6 @@ public class TreeParser {
             } else if (c == ')') {
                 stack.pop();
             }
-            // Überspringe andere Zeichen falls vorhanden
-
             i++;
         }
 

@@ -69,3 +69,15 @@ aussehen, wie in diesem Bild dargestellt:
 docs/Beispiel 3.png
 
 Einlesedateien für die Arbeit mit Java: A1_EinlesenJava
+
+**Struktur der Dokumentation**
+
+Für jede bearbeitete Aufgabe sollst du im schriftlichen Teil deiner Einsendung (Dokumentation)
+
+- deine Lösungsidee beschreiben;
+- die Umsetzung der Idee in ein Programm erläutern;
+- an genügend Beispielen zeigen, dass und wie deine Lösung funktioniert;
+- und die wichtigsten Teile des Quelltextes anfügen.
+Achtung: eine gute Dokumentation muss nicht lang sein, aber unbedingt die Beispiele enthalten! 
+Der praktische Teil deiner Einsendung ist die Implementierung und umfasst den kompletten Quelltext
+das ausführbare Programm (Windows, Linux, MacOS X oder Android).

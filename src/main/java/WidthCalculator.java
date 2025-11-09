@@ -3,17 +3,16 @@ import java.util.List;
 
 /**
  * Behandelt Breitenberechnungen für den Baum.
- * Implementiert den Algorithmus zur Berechnung der Gesamtbreite mit LCM und
+ * Implementiert den Algorithmus zur Berechnung der Gesamtbreite mit kgV und
  * Zuweisung von
  * ganzzahligen Breiten.
  */
 public class WidthCalculator {
 
     /**
-     * Berechnet die Gesamtbreite durch Finden des LCM aller Pfadnenner.
-     *
+     * Berechnet die Gesamtbreite durch Finden der kgV aller Pfadnenner.
      * @param root der Wurzelknoten des Baumes
-     * @return die Gesamtbreite (LCM)
+     * @return die Gesamtbreite (kgV)
      */
     public int calculateTotalWidth(Node root) {
         List<Integer> denominators = new ArrayList<>();
@@ -22,11 +21,11 @@ public class WidthCalculator {
     }
 
     /**
-     * Recursively collects denominators for each leaf path.
+     * Sammelt rekursiv die Nenner für jeden Blattpfad.
      * 
-     * @param node               current node
-     * @param currentDenominator current path denominator
-     * @param denominators       list to collect denominators
+     * @param node               aktueller Knoten
+     * @param currentDenominator aktueller Pfadnenner
+     * @param denominators       Liste zum Sammeln der Nenner
      */
     private void collectDenominators(Node node, int currentDenominator, List<Integer> denominators) {
         if (node.isLeaf()) {
@@ -43,10 +42,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Computes the Least Common Multiple (LCM) of a list of integers.
+     * Berechnet das kleinste gemeinsame Vielfache (kgV) einer Liste von ganzen Zahlen.
      * 
-     * @param numbers list of numbers
-     * @return LCM of all numbers
+     * @param numbers Liste von Zahlen
+     * @return kgV aller Zahlen
      */
     private int lcm(List<Integer> numbers) {
         if (numbers.isEmpty())
@@ -59,22 +58,22 @@ public class WidthCalculator {
     }
 
     /**
-     * Computes LCM of two numbers using GCD.
+     * Berechnet das kgV von zwei Zahlen mit Hilfe des ggT.
      * 
-     * @param a first number
-     * @param b second number
-     * @return LCM of a and b
+     * @param a erste Zahl
+     * @param b zweite Zahl
+     * @return kgV von a und b
      */
     private int lcm(int a, int b) {
         return a * (b / gcd(a, b));
     }
 
     /**
-     * Computes Greatest Common Divisor using Euclidean algorithm.
+     * Berechnet den größten gemeinsamen Teiler (ggT) mit dem Euklidischen Algorithmus.
      * 
-     * @param a first number
-     * @param b second number
-     * @return GCD of a and b
+     * @param a erste Zahl
+     * @param b zweite Zahl
+     * @return ggT von a und b
      */
     private int gcd(int a, int b) {
         while (b != 0) {
@@ -86,21 +85,21 @@ public class WidthCalculator {
     }
 
     /**
-     * Assigns integer widths and depths to all nodes starting from total width.
+     * Weist allen Knoten ganzzahlige Breiten und Tiefen zu, ausgehend von der Gesamtbreite.
      *
-     * @param root       the root node
-     * @param totalWidth the total width to distribute
+     * @param root       der Wurzelknoten
+     * @param totalWidth die zu verteilende Gesamtbreite
      */
     public void assignWidthsAndDepths(Node root, int totalWidth) {
         assignWidthsAndDepthsRecursive(root, totalWidth, 1);
     }
 
     /**
-     * Recursively assigns widths and depths to nodes.
+     * Weist Knoten rekursiv Breiten und Tiefen zu.
      *
-     * @param node  current node
-     * @param width width to assign to this node
-     * @param depth depth to assign to this node
+     * @param node  aktueller Knoten
+     * @param width diesem Knoten zuzuweisende Breite
+     * @param depth diesem Knoten zuzuweisende Tiefe
      */
     private void assignWidthsAndDepthsRecursive(Node node, int width, int depth) {
         node.setWidth(width);
@@ -117,10 +116,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Collects widths of all leaf nodes in left-to-right order.
+     * Sammelt die Breiten aller Blattknoten in Links-nach-Rechts-Reihenfolge.
      * 
-     * @param root the root node
-     * @return list of leaf widths
+     * @param root der Wurzelknoten
+     * @return Liste der Blattbreiten
      */
     public List<Integer> getLeafWidths(Node root) {
         List<Integer> widths = new ArrayList<>();
@@ -129,10 +128,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Recursively collects leaf widths.
+     * Sammelt rekursiv die Blattbreiten.
      * 
-     * @param node   current node
-     * @param widths list to collect widths
+     * @param node   aktueller Knoten
+     * @param widths Liste zum Sammeln der Breiten
      */
     private void collectLeafWidths(Node node, List<Integer> widths) {
         if (node.isLeaf()) {
@@ -146,10 +145,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Collects depths of all leaf nodes in left-to-right order.
+     * Sammelt die Tiefen aller Blattknoten in Links-nach-Rechts-Reihenfolge.
      *
-     * @param root the root node
-     * @return list of leaf depths
+     * @param root der Wurzelknoten
+     * @return Liste der Blatttiefen
      */
     public List<Integer> getLeafDepths(Node root) {
         List<Integer> depths = new ArrayList<>();
@@ -158,10 +157,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Recursively collects leaf depths.
+     * Sammelt rekursiv die Blatttiefen.
      *
-     * @param node   current node
-     * @param depths list to collect depths
+     * @param node   aktueller Knoten
+     * @param depths Liste zum Sammeln der Tiefen
      */
     private void collectLeafDepths(Node node, List<Integer> depths) {
         if (node.isLeaf()) {
@@ -175,10 +174,10 @@ public class WidthCalculator {
     }
 
     /**
-     * Checks if the list of widths forms a palindrome.
+     * Prüft, ob die Liste der Breiten ein Palindrom bildet.
      *
-     * @param widths list of integers
-     * @return true if palindrome, false otherwise
+     * @param widths Liste von ganzen Zahlen
+     * @return true, wenn Palindrom, sonst false
      */
     public boolean isWidthPalindrome(List<Integer> widths) {
         int n = widths.size();
@@ -191,11 +190,11 @@ public class WidthCalculator {
     }
 
     /**
-     * Checks if the sum of depths from both ends is constant.
-     * For each position i, depths[i] + depths[n-1-i] should be the same.
+     * Prüft, ob die Summe der Tiefen von beiden Enden konstant ist.
+     * Für jede Position i sollte depths[i] + depths[n-1-i] gleich sein.
      *
-     * @param depths list of depths
-     * @return true if constant depth sum, false otherwise
+     * @param depths Liste der Tiefen
+     * @return true, wenn die Tiefensumme konstant ist, sonst false
      */
     public boolean isConstantDepthSum(List<Integer> depths) {
         int n = depths.size();
@@ -212,12 +211,11 @@ public class WidthCalculator {
     }
 
     /**
-     * Checks if the tree is drehfreudig (both width palindrome and constant depth
-     * sum).
+     * Prüft, ob der Baum drehfreudig ist (sowohl Breitenpalindrom als auch konstante Tiefensumme).
      *
-     * @param widths list of leaf widths
-     * @param depths list of leaf depths
-     * @return true if drehfreudig, false otherwise
+     * @param widths Liste der Blattbreiten
+     * @param depths Liste der Blatttiefen
+     * @return true, wenn drehfreudig, sonst false
      */
     public boolean isDrehfreudig(List<Integer> widths, List<Integer> depths) {
         return isWidthPalindrome(widths) && isConstantDepthSum(depths);

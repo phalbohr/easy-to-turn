@@ -13,6 +13,10 @@ import java.util.stream.Stream;
  */
 public class DrehfreudigChecker {
 
+    /**
+     * Hauptmethode zum Ausführen des Programms.
+     * @param args Kommandozeilenargumente, die die zu verarbeitenden Dateinamen enthalten
+     */
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Verwendung: java DrehfreudigChecker <dateiname1> [dateiname2] [dateiname3] ...");
@@ -55,8 +59,7 @@ public class DrehfreudigChecker {
 
     /**
      * Verarbeitet eine einzelne Datei.
-     *
-     * @param filename die zu verarbeitende Datei
+     * @param filename der Name der zu verarbeitenden Datei
      */
     private static void processFile(String filename) {
         try {
@@ -113,9 +116,8 @@ public class DrehfreudigChecker {
 
     /**
      * Liest den Inhalt einer Datei.
-     *
-     * @param filename die zu lesende Datei
-     * @return der Dateiinhalt oder null bei Fehler
+     * @param filename der Name der zu lesenden Datei
+     * @return der Inhalt der Datei als String oder null bei einem Fehler
      */
     private static String readFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
