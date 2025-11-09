@@ -85,23 +85,25 @@ public class WidthCalculator {
     }
 
     /**
-     * Assigns integer widths to all nodes starting from total width.
-     * 
+     * Assigns integer widths and depths to all nodes starting from total width.
+     *
      * @param root       the root node
      * @param totalWidth the total width to distribute
      */
-    public void assignWidths(Node root, int totalWidth) {
-        assignWidthsRecursive(root, totalWidth);
+    public void assignWidthsAndDepths(Node root, int totalWidth) {
+        assignWidthsAndDepthsRecursive(root, totalWidth, 1);
     }
 
     /**
-     * Recursively assigns widths to nodes.
-     * 
+     * Recursively assigns widths and depths to nodes.
+     *
      * @param node  current node
      * @param width width to assign to this node
+     * @param depth depth to assign to this node
      */
-    private void assignWidthsRecursive(Node node, int width) {
+    private void assignWidthsAndDepthsRecursive(Node node, int width, int depth) {
         node.setWidth(width);
+        node.setDepth(depth);
         if (node.isLeaf())
             return;
 
@@ -109,7 +111,7 @@ public class WidthCalculator {
         int childWidth = width / childCount;
 
         for (Node child : node.getChildren()) {
-            assignWidthsRecursive(child, childWidth);
+            assignWidthsAndDepthsRecursive(child, childWidth, depth + 1);
         }
     }
 
@@ -143,8 +145,37 @@ public class WidthCalculator {
     }
 
     /**
+     * Collects depths of all leaf nodes in left-to-right order.
+     *
+     * @param root the root node
+     * @return list of leaf depths
+     */
+    public List<Integer> getLeafDepths(Node root) {
+        List<Integer> depths = new ArrayList<>();
+        collectLeafDepths(root, depths);
+        return depths;
+    }
+
+    /**
+     * Recursively collects leaf depths.
+     *
+     * @param node   current node
+     * @param depths list to collect depths
+     */
+    private void collectLeafDepths(Node node, List<Integer> depths) {
+        if (node.isLeaf()) {
+            depths.add(node.getDepth());
+            return;
+        }
+
+        for (Node child : node.getChildren()) {
+            collectLeafDepths(child, depths);
+        }
+    }
+
+    /**
      * Checks if the list of widths forms a palindrome.
-     * 
+     *
      * @param widths list of integers
      * @return true if palindrome, false otherwise
      */
