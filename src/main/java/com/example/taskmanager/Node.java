@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a node in the tree structure.
- * Each node can have children and a calculated width and depth.
+ * Stellt einen Knoten in der Baumstruktur dar.
+ * Jeder Knoten kann Kinder haben und eine berechnete Breite und Tiefe.
  */
 public class Node {
     private List<Node> children;

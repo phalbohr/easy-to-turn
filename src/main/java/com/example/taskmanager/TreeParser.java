@@ -1,16 +1,16 @@
 import java.util.Stack;
 
 /**
- * Parses a parenthesis string into a tree structure.
- * Uses a stack-based approach to build the tree recursively.
+ * Parst eine Klammerzeichenfolge in eine Baumstruktur.
+ * Verwendet einen stack-basierten Ansatz, um den Baum rekursiv aufzubauen.
  */
 public class TreeParser {
 
     /**
-     * Parses the input string into a Node tree.
-     * 
-     * @param input the parenthesis string representing the tree
-     * @return the root node of the parsed tree
+     * Parst die Eingabezeichenfolge in einen Node-Baum.
+     *
+     * @param input die Klammerzeichenfolge, die den Baum darstellt
+     * @return der Wurzelknoten des geparsten Baumes
      */
     public Node parse(String input) {
         if (input == null || input.isEmpty()) {
@@ -35,7 +35,7 @@ public class TreeParser {
             } else if (c == ')') {
                 stack.pop();
             }
-            // Skip other characters if any
+            // Überspringe andere Zeichen falls vorhanden
 
             i++;
         }

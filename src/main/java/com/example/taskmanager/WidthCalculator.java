@@ -2,17 +2,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles width calculations for the tree.
- * Implements the algorithm to compute total width using LCM and assign integer
- * widths.
+ * Behandelt Breitenberechnungen für den Baum.
+ * Implementiert den Algorithmus zur Berechnung der Gesamtbreite mit LCM und
+ * Zuweisung von
+ * ganzzahligen Breiten.
  */
 public class WidthCalculator {
 
     /**
-     * Calculates the total width by finding LCM of all path denominators.
-     * 
-     * @param root the root node of the tree
-     * @return the total width (LCM)
+     * Berechnet die Gesamtbreite durch Finden des LCM aller Pfadnenner.
+     *
+     * @param root der Wurzelknoten des Baumes
+     * @return die Gesamtbreite (LCM)
      */
     public int calculateTotalWidth(Node root) {
         List<Integer> denominators = new ArrayList<>();
@@ -198,7 +199,8 @@ public class WidthCalculator {
      */
     public boolean isConstantDepthSum(List<Integer> depths) {
         int n = depths.size();
-        if (n == 0) return true;
+        if (n == 0)
+            return true;
 
         int expectedSum = depths.get(0) + depths.get(n - 1);
         for (int i = 1; i < n / 2; i++) {
@@ -210,7 +212,8 @@ public class WidthCalculator {
     }
 
     /**
-     * Checks if the tree is drehfreudig (both width palindrome and constant depth sum).
+     * Checks if the tree is drehfreudig (both width palindrome and constant depth
+     * sum).
      *
      * @param widths list of leaf widths
      * @param depths list of leaf depths

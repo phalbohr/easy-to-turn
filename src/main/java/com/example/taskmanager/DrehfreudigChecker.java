@@ -8,34 +8,34 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Main class for checking if a tree is drehfreudig.
- * Reads input files, processes trees, and displays results.
+ * Hauptklasse zur Überprüfung, ob ein Baum drehfreudig ist.
+ * Liest Eingabedateien, verarbeitet Bäume und zeigt Ergebnisse an.
  */
 public class DrehfreudigChecker {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.println("Usage: java DrehfreudigChecker <filename1> [filename2] [filename3] ...");
-            System.out.println("Or run without args to process all files in docs/aufgaben/");
+            System.out.println("Verwendung: java DrehfreudigChecker <dateiname1> [dateiname2] [dateiname3] ...");
+            System.out.println("Oder ohne Argumente alle Dateien in docs/aufgaben/ verarbeiten");
             processAllFiles();
             return;
         }
 
-        // Process each file argument
+        // Jede Datei-Argument verarbeiten
         for (String filename : args) {
-            System.out.println("\n=== Processing " + filename + " ===");
+            System.out.println("\n=== Verarbeite " + filename + " ===");
             processFile(filename);
         }
     }
 
     /**
-     * Processes all files in the aufgaben directory.
+     * Verarbeitet alle Dateien im Aufgaben-Verzeichnis.
      */
     private static void processAllFiles() {
         try {
             Path aufgabenDir = Paths.get("docs", "aufgaben");
             if (!Files.exists(aufgabenDir)) {
-                System.out.println("Directory docs/aufgaben not found!");
+                System.out.println("Verzeichnis docs/aufgaben nicht gefunden!");
                 return;
             }
 
@@ -44,78 +44,78 @@ public class DrehfreudigChecker {
                         .filter(p -> p.toString().endsWith(".txt"))
                         .sorted()
                         .forEach(path -> {
-                            System.out.println("\n=== Processing " + path.getFileName() + " ===");
+                            System.out.println("\n=== Verarbeite " + path.getFileName() + " ===");
                             processFile(path.toString());
                         });
             }
         } catch (IOException e) {
-            System.out.println("Error reading directory: " + e.getMessage());
+            System.out.println("Fehler beim Lesen des Verzeichnisses: " + e.getMessage());
         }
     }
 
     /**
-     * Processes a single file.
-     * 
-     * @param filename the file to process
+     * Verarbeitet eine einzelne Datei.
+     *
+     * @param filename die zu verarbeitende Datei
      */
     private static void processFile(String filename) {
         try {
             String content = readFile(filename);
             if (content == null) {
-                System.out.println("Could not read file: " + filename);
+                System.out.println("Datei konnte nicht gelesen werden: " + filename);
                 return;
             }
 
-            // Parse the tree
+            // Parse den Baum
             TreeParser parser = new TreeParser();
             Node root = parser.parse(content.trim());
 
             if (root == null) {
-                System.out.println("Invalid tree structure in file: " + filename);
+                System.out.println("Ungültige Baumstruktur in Datei: " + filename);
                 return;
             }
 
-            // Calculate widths and depths
+            // Berechne Breiten und Tiefen
             WidthCalculator calculator = new WidthCalculator();
             int totalWidth = calculator.calculateTotalWidth(root);
             calculator.assignWidthsAndDepths(root, totalWidth);
 
-            // Get leaf widths and depths, then check drehfreudig conditions
+            // Hole Blattbreiten und -tiefen, dann prüfe Drehfreudig-Bedingungen
             List<Integer> leafWidths = calculator.getLeafWidths(root);
             List<Integer> leafDepths = calculator.getLeafDepths(root);
             boolean isWidthPalindrome = calculator.isWidthPalindrome(leafWidths);
             boolean isConstantDepthSum = calculator.isConstantDepthSum(leafDepths);
             boolean isDrehfreudig = isWidthPalindrome && isConstantDepthSum;
 
-            // Output result
-            System.out.println("Tree: " + content.trim());
-            System.out.println("Leaf widths: " + leafWidths);
-            System.out.println("Widths check: " + (isWidthPalindrome ? "passed" : "not passed"));
+            // Ausgabe Ergebnis
+            System.out.println("Baum: " + content.trim());
+            System.out.println("Blattbreiten: " + leafWidths);
+            System.out.println("Breitenprüfung: " + (isWidthPalindrome ? "bestanden" : "nicht bestanden"));
 
             if (isWidthPalindrome) {
-                System.out.println("Leaf depths: " + leafDepths);
-                System.out.println("Depths check: " + (isConstantDepthSum ? "passed" : "not passed"));
+                System.out.println("Blatttiefen: " + leafDepths);
+                System.out.println("Tiefenprüfung: " + (isConstantDepthSum ? "bestanden" : "nicht bestanden"));
             }
 
-            System.out.println("Result: " + (isDrehfreudig ? "DREHFREUDIG" : "NICHT DREHFREUDIG"));
+            System.out.println("Ergebnis: " + (isDrehfreudig ? "DREHFREUDIG" : "NICHT DREHFREUDIG"));
 
-            // Display tree if drehfreudig
+            // Zeige Baum an, wenn drehfreudig
             if (isDrehfreudig) {
-                System.out.println("\nTree visualization:");
+                System.out.println("\nBaumvisualisierung:");
                 TreeDisplay display = new TreeDisplay();
                 display.display(root);
             }
 
         } catch (Exception e) {
-            System.out.println("Error processing file " + filename + ": " + e.getMessage());
+            System.out.println("Fehler bei der Verarbeitung der Datei " + filename + ": " + e.getMessage());
         }
     }
 
     /**
-     * Reads the content of a file.
-     * 
-     * @param filename the file to read
-     * @return the file content or null if error
+     * Liest den Inhalt einer Datei.
+     *
+     * @param filename die zu lesende Datei
+     * @return der Dateiinhalt oder null bei Fehler
      */
     private static String readFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
