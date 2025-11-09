@@ -179,7 +179,7 @@ public class WidthCalculator {
      * @param widths list of integers
      * @return true if palindrome, false otherwise
      */
-    public boolean isPalindrome(List<Integer> widths) {
+    public boolean isWidthPalindrome(List<Integer> widths) {
         int n = widths.size();
         for (int i = 0; i < n / 2; i++) {
             if (!widths.get(i).equals(widths.get(n - 1 - i))) {
@@ -187,5 +187,36 @@ public class WidthCalculator {
             }
         }
         return true;
+    }
+
+    /**
+     * Checks if the sum of depths from both ends is constant.
+     * For each position i, depths[i] + depths[n-1-i] should be the same.
+     *
+     * @param depths list of depths
+     * @return true if constant depth sum, false otherwise
+     */
+    public boolean isConstantDepthSum(List<Integer> depths) {
+        int n = depths.size();
+        if (n == 0) return true;
+
+        int expectedSum = depths.get(0) + depths.get(n - 1);
+        for (int i = 1; i < n / 2; i++) {
+            if (depths.get(i) + depths.get(n - 1 - i) != expectedSum) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the tree is drehfreudig (both width palindrome and constant depth sum).
+     *
+     * @param widths list of leaf widths
+     * @param depths list of leaf depths
+     * @return true if drehfreudig, false otherwise
+     */
+    public boolean isDrehfreudig(List<Integer> widths, List<Integer> depths) {
+        return isWidthPalindrome(widths) && isConstantDepthSum(depths);
     }
 }

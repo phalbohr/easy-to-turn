@@ -80,10 +80,10 @@ public class DrehfreudigChecker {
             int totalWidth = calculator.calculateTotalWidth(root);
             calculator.assignWidthsAndDepths(root, totalWidth);
 
-            // Get leaf widths and depths, then check palindrome
+            // Get leaf widths and depths, then check drehfreudig conditions
             List<Integer> leafWidths = calculator.getLeafWidths(root);
             List<Integer> leafDepths = calculator.getLeafDepths(root);
-            boolean isDrehfreudig = calculator.isPalindrome(leafWidths);
+            boolean isDrehfreudig = calculator.isDrehfreudig(leafWidths, leafDepths);
 
             // Output result
             System.out.println("Tree: " + content.trim());
