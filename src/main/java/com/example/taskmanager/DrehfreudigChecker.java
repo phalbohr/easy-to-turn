@@ -83,14 +83,21 @@ public class DrehfreudigChecker {
             // Get leaf widths and depths, then check drehfreudig conditions
             List<Integer> leafWidths = calculator.getLeafWidths(root);
             List<Integer> leafDepths = calculator.getLeafDepths(root);
-            boolean isDrehfreudig = calculator.isDrehfreudig(leafWidths, leafDepths);
+            boolean isWidthPalindrome = calculator.isWidthPalindrome(leafWidths);
+            boolean isConstantDepthSum = calculator.isConstantDepthSum(leafDepths);
+            boolean isDrehfreudig = isWidthPalindrome && isConstantDepthSum;
 
             // Output result
             System.out.println("Tree: " + content.trim());
             System.out.println("Leaf widths: " + leafWidths);
-            System.out.println("Leaf depths: " + leafDepths);
-            System.out.println("Total width: " + totalWidth);
-            System.out.println("Result: " + (isDrehfreudig ? "Drehfreudig" : "Nicht drehfreudig"));
+            System.out.println("Widths check: " + (isWidthPalindrome ? "passed" : "not passed"));
+
+            if (isWidthPalindrome) {
+                System.out.println("Leaf depths: " + leafDepths);
+                System.out.println("Depths check: " + (isConstantDepthSum ? "passed" : "not passed"));
+            }
+
+            System.out.println("Result: " + (isDrehfreudig ? "DREHFREUDIG" : "NICHT DREHFREUDIG"));
 
             // Display tree if drehfreudig
             if (isDrehfreudig) {
