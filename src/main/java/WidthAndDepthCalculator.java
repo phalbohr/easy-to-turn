@@ -7,7 +7,12 @@ import java.util.List;
  * Zuweisung von
  * ganzzahligen Breiten.
  */
-public class WidthCalculator {
+public class WidthAndDepthCalculator {
+
+    /**
+     * Erstellt eine neue Instanz des WidthAndDepthCalculator.
+     */
+    public WidthAndDepthCalculator() {}
 
     /**
      * Berechnet die Gesamtbreite durch Finden der kgV aller Pfadnenner.
@@ -191,14 +196,14 @@ public class WidthCalculator {
 
     /**
      * Prüft, ob die Summe der Tiefen von beiden Enden konstant ist.
-     * Für jede Position i sollte depths[i] + depths[n-1-i] gleich sein.
+     * Für jedes symmetrische Paar von Blättern (i und n-1-i) wird geprüft, ob die Summe ihrer Tiefen konstant ist.
      *
      * @param depths Liste der Tiefen
      * @return true, wenn die Tiefensumme konstant ist, sonst false
      */
     public boolean isConstantDepthSum(List<Integer> depths) {
         int n = depths.size();
-        if (n == 0)
+        if (n <= 1) // Ein einzelnes Blatt oder ein leerer Baum erfüllt die Bedingung trivialerweise.
             return true;
 
         int expectedSum = depths.get(0) + depths.get(n - 1);
@@ -208,16 +213,5 @@ public class WidthCalculator {
             }
         }
         return true;
-    }
-
-    /**
-     * Prüft, ob der Baum drehfreudig ist (sowohl Breitenpalindrom als auch konstante Tiefensumme).
-     *
-     * @param widths Liste der Blattbreiten
-     * @param depths Liste der Blatttiefen
-     * @return true, wenn drehfreudig, sonst false
-     */
-    public boolean isDrehfreudig(List<Integer> widths, List<Integer> depths) {
-        return isWidthPalindrome(widths) && isConstantDepthSum(depths);
     }
 }

@@ -8,10 +8,24 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Hauptklasse zur Überprüfung, ob ein Baum drehfreudig ist.
- * Liest Eingabedateien, verarbeitet Bäume und zeigt Ergebnisse an.
+ * Hauptklasse zur Überprüfung, ob ein in Klammernotation gegebener Baum "drehfreudig" ist.
+ * <p>
+ * Ein Baum ist drehfreudig, wenn zwei Bedingungen erfüllt sind:
+ * 1. Die Sequenz der Breiten seiner Blätter ist ein Palindrom.
+ * 2. Die Summe der Tiefen für jedes Paar symmetrischer Blätter ist konstant.
+ * <p>
+ * Das Programm kann eine oder mehrere Dateien als Kommandozeilenargumente verarbeiten oder, wenn keine Argumente angegeben sind, alle .txt-Dateien im Verzeichnis 'aufgaben/'.
+ * @author Pavel Polukhin
+ * @version 1.0
  */
 public class DrehfreudigChecker {
+
+    /**
+     * Privater Konstruktor, um die Instanziierung dieser Utility-Klasse zu verhindern.
+     */
+    private DrehfreudigChecker() {
+        // Diese Klasse sollte nicht instanziiert werden.
+    }
 
     /**
      * Hauptmethode zum Ausführen des Programms.
@@ -60,26 +74,26 @@ public class DrehfreudigChecker {
     /**
      * Verarbeitet eine einzelne Datei.
      * @param filename der Name der zu verarbeitenden Datei
+     * @throws IllegalArgumentException wenn die Baumstruktur in der Datei ungültig ist.
      */
     private static void processFile(String filename) {
         try {
             String content = readFile(filename);
-            if (content == null) {
-                System.out.println("Datei konnte nicht gelesen werden: " + filename);
-                return;
+            if (content == null || content.trim().isEmpty()) {
+                throw new IllegalArgumentException("Die Datei ist leer oder enthält keine Baumstruktur.");
             }
 
             // Parse den Baum
             TreeParser parser = new TreeParser();
-            Node root = parser.parse(content.trim());
+            String trimmedContent = content.trim();
+            Node root = parser.parse(trimmedContent);
 
             if (root == null) {
-                System.out.println("Ungültige Baumstruktur in Datei: " + filename);
-                return;
+                throw new IllegalArgumentException("Ungültige Baumstruktur in Datei: " + filename);
             }
 
             // Berechne Breiten und Tiefen
-            WidthCalculator calculator = new WidthCalculator();
+            WidthAndDepthCalculator calculator = new WidthAndDepthCalculator();
             int totalWidth = calculator.calculateTotalWidth(root);
             calculator.assignWidthsAndDepths(root, totalWidth);
 
@@ -88,10 +102,9 @@ public class DrehfreudigChecker {
             List<Integer> leafDepths = calculator.getLeafDepths(root);
             boolean isWidthPalindrome = calculator.isWidthPalindrome(leafWidths);
             boolean isConstantDepthSum = calculator.isConstantDepthSum(leafDepths);
-            boolean isDrehfreudig = isWidthPalindrome && isConstantDepthSum;
 
             // Ausgabe Ergebnis
-            System.out.println("Baum: " + content.trim());
+            System.out.println("Baum: " + trimmedContent);
             System.out.println("Blattbreiten: " + leafWidths);
             System.out.println("Breitenprüfung: " + (isWidthPalindrome ? "bestanden" : "nicht bestanden"));
 
@@ -100,6 +113,7 @@ public class DrehfreudigChecker {
                 System.out.println("Tiefenprüfung: " + (isConstantDepthSum ? "bestanden" : "nicht bestanden"));
             }
 
+            boolean isDrehfreudig = isWidthPalindrome && isConstantDepthSum;
             System.out.println("Ergebnis: " + (isDrehfreudig ? "DREHFREUDIG" : "NICHT DREHFREUDIG"));
 
             // Zeige Baum an, wenn drehfreudig
@@ -109,8 +123,12 @@ public class DrehfreudigChecker {
                 display.display(root);
             }
 
+        } catch (IOException e) {
+            System.err.println("Fehler beim Lesen der Datei '" + filename + "': " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Fehler in der Eingabe für Datei '" + filename + "': " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Fehler bei der Verarbeitung der Datei " + filename + ": " + e.getMessage());
+            System.err.println("Ein unerwarteter Fehler ist bei der Verarbeitung von '" + filename + "' aufgetreten: " + e.getMessage());
         }
     }
 
@@ -118,12 +136,11 @@ public class DrehfreudigChecker {
      * Liest den Inhalt einer Datei.
      * @param filename der Name der zu lesenden Datei
      * @return der Inhalt der Datei als String oder null bei einem Fehler
+     * @throws IOException wenn ein Fehler beim Lesen der Datei auftritt.
      */
-    private static String readFile(String filename) {
+    private static String readFile(String filename) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             return reader.readLine();
-        } catch (IOException e) {
-            return null;
         }
     }
 }

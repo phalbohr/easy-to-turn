@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"Alle Klassen und Schnittstellen","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"DrehfreudigChecker"},{"p":"<Unnamed>","l":"Node"},{"p":"<Unnamed>","l":"TreeDisplay"},{"p":"<Unnamed>","l":"TreeParser"},{"p":"<Unnamed>","l":"WidthAndDepthCalculator"}];updateSearchResults();

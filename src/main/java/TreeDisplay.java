@@ -8,6 +8,11 @@ import java.util.List;
 public class TreeDisplay {
 
     /**
+     * Erstellt eine neue Instanz des TreeDisplay.
+     */
+    public TreeDisplay() {}
+
+    /**
      * Zeigt den Baum in einem visuellen Format an.
      * 
      * @param root der Wurzelknoten des Baumes

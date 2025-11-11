@@ -6,8 +6,11 @@ import java.util.List;
  * Jeder Knoten kann Kinder haben und eine berechnete Breite und Tiefe.
  */
 public class Node {
+    /** Die Liste der Kinderknoten dieses Knotens. */
     private List<Node> children;
+    /** Die berechnete Breite des Knotens, die den ihm zugewiesenen horizontalen Raum darstellt. */
     private int width;
+    /** Die Tiefe des Knotens im Baum, wobei der Wurzelknoten die Tiefe 1 hat. */
     private int depth;
 
     /**
