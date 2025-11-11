@@ -1,204 +1,65 @@
-# Drehfreudig? - Aufgabe 1
+Drehfreudig? - Aufgabe 1LösungsideeDie zentrale Fragestellung lautet: Wann ist ein Baum "drehfreudig"? Ich stelle mir vor, ich drucke den Baum auf ein Blatt Papier, drehe es um 180 Grad und versuche, es passgenau auf den ursprünglichen Baum zu legen. Die beiden Hälften müssen perfekt ineinandergreifen, so wie die Teile eines Puzzles oder die Blöcke bei Tetris.Aus der Aufgabenbeschreibung leite ich ab, dass der Baum aus Rechtecken aufgebaut ist. Jeder Knoten wird zu einem Rechteck, und die Kinder eines Knotens teilen sich die Breite ihres Vaters. Wenn ich den Baum nun um 180 Grad drehe, wird die untere Hälfte des gedrehten Baumes zur oberen Hälfte. Damit die beiden Teile zusammenpassen, muss die "Kontur" der Blätter des gedrehten Baumes exakt zur "Kontur" der Blätter des Originalbaumes passen.Dies führt mich zu zwei entscheidenden Prüfungen:Die Symmetrie der Blattbreiten (Palindrom-Prüfung): Die Breiten der Blätter, von links nach rechts gelesen, müssen ein Palindrom ergeben. Das bedeutet, die Breiten müssen vorwärts und rückwärts gelesen identisch sein (z. B. [1, 2, 3, 2, 1]). Dies stellt die grundlegende horizontale Symmetrie sicher.Um bei der Berechnung der Blattbreiten Rundungsfehler oder den Umgang mit Brüchen zu vermeiden, habe ich mich entschieden, nur mit ganzen Zahlen zu arbeiten. Der Ansatz besteht darin, eine "Gesamtbreite" für den Baum zu finden, die sich ohne Rest auf alle Kinder aufteilen lässt. Dazu wird das kleinste gemeinsame Vielfache (kgV) der "Pfadnenner" verwendet. Ein Pfadnenner ist das Produkt der Kinderanzahlen entlang des Pfades von der Wurzel zu einem Blatt. Diese Gesamtbreite (das kgV) wird dann von der Wurzel abwärts proportional auf alle Kindknoten verteilt, was zu ganzzahligen Breiten für jedes Blatt führt.Die Passgenauigkeit der Blatttiefen (Tetris-Prüfung): Die Palindrom-Prüfung der Breiten ist zwar der erste, notwendige Schritt, aber sie allein reicht nicht aus. Es ist möglich, einen Baum zu konstruieren, der symmetrische Blattbreiten hat (also ein Palindrom), bei dem aber beim Drehen nicht alle Blätter ihre Gegenstücke treffen. Einige Blätter würden "in der Luft hängen" oder Lücken lassen, was die Bedingung des "passgenauen Treffens" verletzt.Deshalb folgt die zweite, entscheidende Prüfung: Die Summe der Tiefen von gegenüberliegenden Blättern (das erste und das letzte, das zweite und das vorletzte usw.) muss immer denselben Wert ergeben. Diese Konstante sorgt dafür, dass die "Zähne" des einen Teils perfekt in die "Lücken" des anderen Teils greifen. Ohne diese Bedingung würden die Teile kollidieren oder Lücken lassen, selbst wenn die Breiten symmetrisch sind.Nur wenn beide Bedingungen erfüllt sind, ist der Baum wahrhaft drehfreudig.OOP-AnsatzFür die Umsetzung habe ich mich für einen objektorientierten Ansatz entschieden. Dies ermöglicht es mir, die komplexe Logik in überschaubare und wiederverwendbare Komponenten zu zerlegen, bei denen jede Klasse eine klare Verantwortung hat:Node: Jede Node-Instanz repräsentiert einen einzelnen Knoten und speichert Informationen über seine Kinder, seine berechnete Breite und seine Tiefe.TreeParser: Diese Klasse nimmt die kompakte Klammernotation (z.B. ((()())())) und übersetzt sie in eine hierarchische Baumstruktur aus Node-Objekten. Mithilfe eines Stack-basierten Algorithmus wird die Verschachtelung der Klammern korrekt in Eltern-Kind-Beziehungen umgewandelt.WidthCalculator: Hier findet die Kernlogik statt. Diese Klasse berechnet zunächst die Gesamtbreite des Baumes, indem sie das kleinste gemeinsame Vielfache (kgV) der Kinderanzahlen auf jeder Ebene ermittelt. Anschließend weist sie jedem Blatt eine ganzzahlige Breite zu und sammelt die Tiefen. Schließlich führt sie die beiden entscheidenden Prüfungen durch: die Palindrom-Prüfung der Breiten und die "Tetris-Prüfung" der Tiefen.TreeDisplay: Um meine Ergebnisse greifbar zu machen, visualisiert diese Klasse den Baum als ASCII-Kunst. Die berechneten Breiten der Knoten werden proportional dargestellt, sodass man die Struktur und Symmetrie des Baumes auf einen Blick erfassen kann.DrehfreudigChecker: Dies ist die Hauptklasse, die alles zusammenhält und als Dirigent agiert. Sie liest die Eingabedateien, startet den TreeParser, beauftragt den WidthCalculator mit den Berechnungen und Prüfungen und verwendet den TreeDisplay zur Visualisierung der Ergebnisse.Dieser modulare Aufbau macht den Code nicht nur lesbarer und wartbarer, sondern auch leichter zu erweitern.Prüfungen im DetailSchauen wir uns nun an, wie diese Prüfungen in der Praxis funktionieren und wie die Ausgaben zustande kommen.Beispiel 1: Ein perfekter Kandidat (drehfreudig01.txt)Dieser Baum ist ein Paradebeispiel für einen drehfreudigen Baum.Baum: (((()())(()())(()()))((()())(()()))((()()())(()()())))
 
-## Unsere Lösungsidee: Vom Baum zum Puzzle
+Schritt 1: Wie die Blattbreiten entstehenUm ganzzahlige Breiten für die Blätter zu erhalten, bestimmen wir eine Gesamtbreite für den Baum. Diese muss durch die Anzahl der Kinder jedes Knotens teilbar sein. Wir finden das kleinste gemeinsame Vielfache (kgV) aller Verzweigungsfaktoren. In diesem Baum gibt es Knoten mit 2 oder 3 Kindern. Das kgV von 2 und 3 ist 6. Die Gesamtbreite des Baumes ist also 6. Die Breite eines Knotens wird dann auf seine Kinder aufgeteilt. Ein Knoten mit 2 Kindern und Breite 6 gibt jedem Kind die Breite 3. Ein Knoten mit 3 Kindern und Breite 6 gibt jedem Kind die Breite 2. Dieser Prozess wird von der Wurzel bis zu den Blättern wiederholt.Nach dieser Berechnung erhalten wir die folgende Liste von Breiten für jedes Blatt, von links nach rechts:Blattbreiten: [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2]
 
-Die zentrale Fragestellung lautet: Wann ist ein Baum "drehfreudig"? Stellen Sie sich vor, Sie drucken den Baum auf ein Blatt Papier, drehen es um 180 Grad und versuchen, es passgenau auf den ursprünglichen Baum zu legen. Die beiden Hälften müssen perfekt ineinandergreifen, so wie die Teile eines Puzzles oder die Blöcke bei Tetris.
+Schritt 2: Die Palindrom-Prüfung der BreitenNun prüfen wir, ob diese Sequenz symmetrisch ist:Das erste Element 2 entspricht dem letzten Element 2.Das zweite Element 2 entspricht dem vorletzten Element 2....und so weiter.Die Liste ist von vorne und hinten gelesen identisch. Die Symmetrie ist gegeben.Breitenprüfung: bestanden
 
-Aus der Aufgabenbeschreibung leiten wir ab, dass der Baum aus Rechtecken aufgebaut ist. Jeder Knoten wird zu einem Rechteck, und die Kinder eines Knotens teilen sich die Breite ihres Vaters. Wenn wir den Baum nun um 180 Grad drehen, wird die untere Hälfte des gedrehten Baumes zur oberen Hälfte. Damit die beiden Teile zusammenpassen, muss die "Kontur" der Blätter des gedrehten Baumes exakt zur "Kontur" der Blätter des Originalbaumes passen.
+Schritt 3: Die "Tetris"-Prüfung der TiefenDie Tiefe eines Blattes ist die Anzahl der Kanten von der Wurzel bis zum Blatt. In diesem Baum haben alle Blätter denselben Abstand zur Wurzel.Blatttiefen: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]*
 
-Dies führt uns zu zwei entscheidenden Prüfungen:
+*Anmerkung: Obwohl in der Programmierung die Wurzel üblicherweise die Tiefe 0 hat, habe ich mich hier entschieden, bei 1 zu beginnen, um die Visualisierung intuitiver zu gestalten.Jetzt summieren wir die Tiefen der gegenüberliegenden Blätter:Tiefe[0] + Tiefe[15] = 4 + 4 = 8Tiefe[1] + Tiefe[14] = 4 + 4 = 8Tiefe[2] + Tiefe[13] = 4 + 4 = 8... und so weiter.Die Summe ist für alle Paare konstant 8. Das bedeutet, die "Zähne" und "Lücken" passen perfekt.Tiefenprüfung: bestanden
 
-1.  **Die Symmetrie der Blattbreiten (Palindrom-Prüfung):** Die Breiten der Blätter, von links nach rechts gelesen, müssen ein Palindrom ergeben. Das bedeutet, die Breiten müssen vorwärts und rückwärts gelesen identisch sein (z. B. `[1, 2, 3, 2, 1]`). Dies stellt die grundlegende horizontale Symmetrie sicher. Wenn der Baum nicht symmetrisch ist, können die Teile unmöglich ineinander passen.
+ErgebnisDa beide Prüfungen erfolgreich waren, ist der Baum drehfreudig.Ergebnis: DREHFREUDIG
 
-2.  **Die Passgenauigkeit der Blatttiefen (Tetris-Prüfung):** Die Summe der Tiefen von gegenüberliegenden Blättern (das erste und das letzte, das zweite und das vorletzte usw.) muss immer denselben Wert ergeben. Diese Konstante sorgt dafür, dass die "Zähne" des einen Teils perfekt in die "Lücken" des anderen Teils greifen. Ohne diese Bedingung würden die Teile kollidieren oder Lücken lassen, selbst wenn die Breiten symmetrisch sind.
+Beispiel 2: Ein asymmetrischer Baum (drehfreudig02.txt)Dieser Baum scheitert bereits an der ersten Hürde.Baum: ((()())(()()()))
 
-Nur wenn beide Bedingungen erfüllt sind, ist der Baum wahrhaft drehfreudig.
+Schritt 1: Breitenberechnung und -prüfungDie Breiten der Blätter werden nach demselben Prinzip wie oben berechnet. Das Ergebnis ist:Blattbreiten: [3, 3, 2, 2, 2]
 
-## OOP-Ansatz und die Rollen unserer Klassen
+Wir prüfen auf Palindrom-Eigenschaft:Das erste Element ist 3, das letzte ist 2.Schon hier ist klar: 3 != 2. Die Liste ist kein Palindrom. Die Breiten sind nicht symmetrisch.Breitenprüfung: nicht bestanden
 
-Für die Umsetzung haben wir uns für einen objektorientierten Ansatz entschieden. Dies ermöglicht es uns, die komplexe Logik in überschaubare und wiederverwendbare Komponenten zu zerlegen, bei denen jede Klasse eine klare Verantwortung hat:
+ErgebnisDa die Symmetrie eine Grundvoraussetzung ist, können wir die Prüfung hier abbrechen. Der Baum kann unmöglich passgenau gedreht werden. Eine weitere Prüfung der Tiefen ist nicht notwendig.Ergebnis: NICHT DREHFREUDIG
 
--   **`Node`**: Das Fundament unseres Baumes. Jede `Node`-Instanz repräsentiert einen einzelnen Knoten und speichert Informationen über seine Kinder, seine berechnete Breite und seine Tiefe. Eine einfache Datenstruktur, die das Grundgerüst für unsere Operationen bildet.
+Beispiel 3: Ein symmetrischer Baum (positives Szenario) (drehfreudig06.txt)Dieser Baum ist ein gutes Beispiel für einen Baum, der zwar unterschiedliche Tiefen hat, aber dennoch die "Tetris-Prüfung" besteht.Baum: ((()()()()()())((()())(()())(()())))
 
--   **`TreeParser`**: Der Architekt. Diese Klasse nimmt die kompakte Klammernotation (z.B. `((()())())`) und übersetzt sie in eine hierarchische Baumstruktur aus `Node`-Objekten. Mithilfe eines Stack-basierten Algorithmus wird die Verschachtelung der Klammern korrekt in Eltern-Kind-Beziehungen umgewandelt.
+Schritt 1: Breitenberechnung und -prüfungDie Pfadnenner sind hier 2*6=12 (für den linken Ast) und 2*3*2=12 (für die Blätter im rechten Ast). Das kgV ist 12. Die Gesamtbreite ist 12.Die berechneten Blattbreiten sind:Blattbreiten: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
--   **`WidthCalculator`**: Das Gehirn der Operation. Hier findet die Kernlogik statt. Diese Klasse berechnet zunächst die Gesamtbreite des Baumes, indem sie das kleinste gemeinsame Vielfache (kgV) der Kinderanzahlen auf jeder Ebene ermittelt. Anschließend weist sie jedem Blatt eine ganzzahlige Breite zu und sammelt die Tiefen. Schließlich führt sie die beiden entscheidenden Prüfungen durch: die Palindrom-Prüfung der Breiten und die "Tetris-Prüfung" der Tiefen.
+Diese Liste ist offensichtlich ein Palindrom.Breitenprüfung: bestanden
 
--   **`TreeDisplay`**: Der Künstler. Um unsere Ergebnisse greifbar zu machen, visualisiert diese Klasse den Baum als ASCII-Kunst. Die berechneten Breiten der Knoten werden proportional dargestellt, sodass man die Struktur und Symmetrie des Baumes auf einen Blick erfassen kann.
+Schritt 2: Tiefenberechnung und -prüfungDie Blätter im linken Ast haben alle die Tiefe 3. Die Blätter im rechten Ast haben alle die Tiefe 4.Blatttiefen: [3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4]
 
--   **`DrehfreudigChecker`**: Der Dirigent. Dies ist die Hauptklasse, die alles zusammenhält. Sie liest die Eingabedateien, startet den `TreeParser`, beauftragt den `WidthCalculator` mit den Berechnungen und Prüfungen und verwendet den `TreeDisplay` zur Visualisierung der Ergebnisse.
+Jetzt die "Tetris-Prüfung":Tiefe[0] + Tiefe[11] = 3 + 4 = 7Tiefe[1] + Tiefe[10] = 3 + 4 = 7...Tiefe[5] + Tiefe[6] = 3 + 4 = 7Die Summe ist für alle Paare konstant 7. Die Teile passen perfekt.Tiefenprüfung: bestanden
 
-Dieser modulare Aufbau macht den Code nicht nur lesbarer und wartbarer, sondern auch leichter zu erweitern.
+ErgebnisBeide Prüfungen waren erfolgreich.Ergebnis: DREHFREUDIG
 
-## Prüfungen im Detail: Erfolge und Fehlschläge
+Beispiel 4: Die "Tetris-Falle" (negatives Szenario) (drehfreudig08.txt)Dieser Baum ist tückisch. Er sieht auf den ersten Blick symmetrisch aus, scheitert aber an der zweiten, subtileren Prüfung.Baum: ((()()())(()()()())((()())(()()())(()()))((()())(()()))(()()()))
 
-Schauen wir uns nun an, wie diese Prüfungen in der Praxis funktionieren und wie die Ausgaben zustande kommen.
+Schritt 1: Breitenberechnung und -prüfungDie berechneten Blattbreiten sind:Blattbreiten: [12, 12, 12, 9, 9, 9, 9, 6, 6, 4, 4, 4, 6, 6, 9, 9, 9, 9, 12, 12, 12]
 
-### Beispiel 1: Ein perfekter Kandidat (drehfreudig01.txt)
+Diese Sequenz ist ein perfektes Palindrom. Die Breiten sind symmetrisch, die erste Hürde ist genommen.Breitenprüfung: bestanden
 
-Dieser Baum ist ein Paradebeispiel für einen drehfreudigen Baum.
+Schritt 2: Tiefenberechnung und -prüfungNun zu den Tiefen. Hier sehen wir, dass nicht alle Blätter gleich tief sind:Blatttiefen: [3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3]
 
-```
-Baum: (((()())(()())(()()))((()())(()()))((()()())(()()())))
-```
+Jetzt die entscheidende "Tetris-Prüfung". Wir summieren die Tiefen der gegenüberliegenden Blätter:Tiefe[0] + Tiefe[20] = 3 + 3 = 6Tiefe[1] + Tiefe[19] = 3 + 3 = 6...Tiefe[6] + Tiefe[14] = 3 + 4 = 7Hier stoßen wir auf ein Problem. Die Summe ist nicht konstant! Während die äußeren Blätter eine Tiefensumme von 6 ergeben, ergibt das siebte und das vierzehnte Blatt eine Summe von 7. Das bedeutet, wenn wir den Baum drehen, würden die Teile an dieser Stelle nicht bündig abschließen – es entstünde eine Lücke oder eine Überlappung.Tiefenprüfung: nicht bestanden
 
-**Schritt 1: Wie die Blattbreiten entstehen**
+ErgebnisObwohl der Baum symmetrische Breiten hat, verhindert die Inkonsistenz der Tiefensummen ein passgenaues Ineinandergreifen.Ergebnis: NICHT DREHFREUDIG
 
-Um ganzzahlige Breiten für die Blätter zu erhalten, bestimmen wir eine Gesamtbreite für den Baum. Diese muss durch die Anzahl der Kinder jedes Knotens teilbar sein. Wir finden das kleinste gemeinsame Vielfache (kgV) aller Verzweigungsfaktoren. In diesem Baum gibt es Knoten mit 2 oder 3 Kindern. Das kgV von 2 und 3 ist 6. Die Gesamtbreite des Baumes ist also 6. Die Breite eines Knotens wird dann auf seine Kinder aufgeteilt. Ein Knoten mit 2 Kindern und Breite 6 gibt jedem Kind die Breite 3. Ein Knoten mit 3 Kindern und Breite 6 gibt jedem Kind die Breite 2. Dieser Prozess wird von der Wurzel bis zu den Blättern wiederholt.
+Anleitung zum AusführenVoraussetzungenJava 8 oder eine neuere Version muss auf Ihrem System installiert sein.KompilierungÖffnen Sie ein Terminal oder eine Kommandozeile, navigieren Sie zum Verzeichnis, das die .java-Dateien enthält, und führen Sie den folgenden Befehl aus:javac *.java
 
-Nach dieser Berechnung erhalten wir die folgende Liste von Breiten für jedes Blatt, von links nach rechts:
+AusführungNach der erfolgreichen Kompilierung können Sie das Programm starten.Um eine oder mehrere spezifische Baumdateien zu überprüfen, übergeben Sie deren Pfade als Argumente, getrennt durch Leerzeichen:java DrehfreudigChecker pfad/zu/ihrer/datei1.txt pfad/zu/ihrer/datei2.txt
 
-```
-Blattbreiten: [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2]
-```
+Zum Beispiel:java DrehfreudigChecker aufgaben/drehfreudig01.txt aufgaben/drehfreudig02.txt
 
-**Schritt 2: Die Palindrom-Prüfung der Breiten**
+Um alle Dateien im Verzeichnis aufgaben/ auf einmal zu prüfen, starten Sie die Klasse ohne Argumente. Die .java-Dateien und das aufgaben-Verzeichnis müssen sich dabei auf derselben Ebene befinden.Die erwartete Verzeichnisstruktur ist:/Projektordner
+├── aufgaben/
+│   ├── drehfreudig01.txt
+│   ├── drehfreudig02.txt
+│   └── ... (alle anderen .txt Dateien)
+├── Node.java
+├── TreeParser.java
+├── WidthCalculator.java
+├── TreeDisplay.java
+├── DrehfreudigChecker.java
+└── (kompilierte .class Dateien nach javac)
 
-Nun prüfen wir, ob diese Sequenz symmetrisch ist:
-- Das erste Element `2` entspricht dem letzten Element `2`.
-- Das zweite Element `2` entspricht dem vorletzten Element `2`.
-- ...und so weiter.
-Die Liste ist von vorne und hinten gelesen identisch. Die Symmetrie ist gegeben.
-
-```
-Breitenprüfung: bestanden
-```
-
-**Schritt 3: Die "Tetris"-Prüfung der Tiefen**
-
-Die Tiefe eines Blattes ist die Anzahl der Kanten von der Wurzel bis zum Blatt. In diesem Baum haben alle Blätter denselben Abstand zur Wurzel.
-
-```
-Blatttiefen: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
-```
-
-Jetzt summieren wir die Tiefen der gegenüberliegenden Blätter:
-- `Tiefe[0] + Tiefe[15] = 4 + 4 = 8`
-- `Tiefe[1] + Tiefe[14] = 4 + 4 = 8`
-- `Tiefe[2] + Tiefe[13] = 4 + 4 = 8`
-- ... und so weiter.
-Die Summe ist für alle Paare konstant `8`. Das bedeutet, die "Zähne" und "Lücken" passen perfekt.
-
-```
-Tiefenprüfung: bestanden
-```
-
-**Ergebnis**
-
-Da beide Prüfungen erfolgreich waren, ist der Baum drehfreudig.
-
-```
-Ergebnis: DREHFREUDIG
-```
-
-### Beispiel 2: Ein asymmetrischer Baum (drehfreudig02.txt)
-
-Dieser Baum scheitert bereits an der ersten Hürde.
-
-```
-Baum: ((()())(()()()))
-```
-
-**Schritt 1: Breitenberechnung und -prüfung**
-
-Die Breiten der Blätter werden nach demselben Prinzip wie oben berechnet. Das Ergebnis ist:
-
-```
-Blattbreiten: [3, 3, 2, 2, 2]
-```
-
-Wir prüfen auf Palindrom-Eigenschaft:
-- Das erste Element ist `3`, das letzte ist `2`.
-Schon hier ist klar: `3 != 2`. Die Liste ist kein Palindrom. Die Breiten sind nicht symmetrisch.
-
-```
-Breitenprüfung: nicht bestanden
-```
-
-**Ergebnis**
-
-Da die Symmetrie eine Grundvoraussetzung ist, können wir die Prüfung hier abbrechen. Der Baum kann unmöglich passgenau gedreht werden. Eine weitere Prüfung der Tiefen ist nicht notwendig.
-
-```
-Ergebnis: NICHT DREHFREUDIG
-```
-
-### Beispiel 3: Die "Tetris"-Falle (drehfreudig08.txt)
-
-Dieser Baum ist tückisch. Er sieht auf den ersten Blick symmetrisch aus, scheitert aber an der zweiten, subtileren Prüfung.
-
-```
-Baum: ((()()())(()()()())((()())(()()())(()()))((()())(()()))(()()()))
-```
-
-**Schritt 1: Breitenberechnung und -prüfung**
-
-Die berechneten Blattbreiten sind:
-
-```
-Blattbreiten: [12, 12, 12, 9, 9, 9, 9, 6, 6, 4, 4, 4, 6, 6, 9, 9, 9, 9, 12, 12, 12]
-```
-
-Diese Sequenz ist ein perfektes Palindrom. Die Breiten sind symmetrisch, die erste Hürde ist genommen.
-
-```
-Breitenprüfung: bestanden
-```
-
-**Schritt 2: Tiefenberechnung und -prüfung**
-
-Nun zu den Tiefen. Hier sehen wir, dass nicht alle Blätter gleich tief sind:
-
-```
-Blatttiefen: [3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3]
-```
-
-Jetzt die entscheidende "Tetris-Prüfung". Wir summieren die Tiefen der gegenüberliegenden Blätter:
-- `Tiefe[0] + Tiefe[20] = 3 + 3 = 6`
-- `Tiefe[1] + Tiefe[19] = 3 + 3 = 6`
-- ...
-- `Tiefe[6] + Tiefe[14] = 3 + 4 = 7`
-
-Hier stoßen wir auf ein Problem. Die Summe ist nicht konstant! Während die äußeren Blätter eine Tiefensumme von `6` ergeben, ergibt das siebte und das vierzehnte Blatt eine Summe von `7`. Das bedeutet, wenn wir den Baum drehen, würden die Teile an dieser Stelle nicht bündig abschließen – es entstünde eine Lücke oder eine Überlappung.
-
-```
-Tiefenprüfung: nicht bestanden
-```
-
-**Ergebnis**
-
-Obwohl der Baum symmetrische Breiten hat, verhindert die Inkonsistenz der Tiefensummen ein passgenaues Ineinandergreifen.
-
-```
-Ergebnis: NICHT DREHFREUDIG
-```
-
-## Anleitung zum Ausführen
-
-### Voraussetzungen
-- Java 8 oder eine neuere Version muss auf Ihrem System installiert sein.
-
-### Kompilierung
-Öffnen Sie ein Terminal oder eine Kommandozeile, navigieren Sie zum Verzeichnis, das die `.java`-Dateien enthält, und führen Sie den folgenden Befehl aus:
-```bash
-javac *.java
-```
-
-### Ausführung
-Nach der erfolgreichen Kompilierung können Sie das Programm starten.
-
-- Um alle im Code vordefinierten Beispieldateien zu verarbeiten:
-  ```bash
-  java DrehfreudigChecker
-  ```
-
-- Um eine oder mehrere spezifische Baumdateien zu überprüfen, übergeben Sie deren Pfade als Argumente:
-  ```bash
-  java DrehfreudigChecker pfad/zu/ihrer/datei1.txt pfad/zu/ihrer/datei2.txt
-  ```
-  Zum Beispiel:
-  ```bash
-  java DrehfreudigChecker aufgaben/drehfreudig01.txt aufgaben/drehfreudig02.txt
-  ```
+Befehl zur Ausführung:java DrehfreudigChecker
 
 Das Programm gibt für jeden analysierten Baum eine detaillierte Aufschlüsselung aus: die ermittelten Blattbreiten, das Ergebnis jeder einzelnen Prüfung und das finale Gesamturteil. Für Bäume, die als "DREHFREUDIG" eingestuft werden, wird zur Veranschaulichung zusätzlich eine ASCII-Visualisierung der Baumstruktur ausgegeben.
